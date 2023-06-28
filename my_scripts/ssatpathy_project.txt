@@ -1,0 +1,190 @@
+mysql> source C:/Users/Sangeet Satpathy/Desktop/IntroDataMng/my_scripts/ssatpathy_project.sql
+--------------
+/* 
+	Sangeet Satpathy
+    Final Project
+    CS31A
+    3/20/23
+*/
+
+/* Creates database */
+CREATE DATABASE SocialMeet
+--------------
+
+Query OK, 1 row affected (0.06 sec)
+
+--------------
+/* Uses database */
+USE SocialMeet
+--------------
+
+Query OK, 0 rows affected (0.00 sec)
+
+--------------
+/* Creates a table of zip codes. */
+CREATE TABLE zip_codes (
+	zip CHAR(5) PRIMARY KEY,
+    city_name VARCHAR(50) NOT NULL,
+    state VARCHAR(30) NOT NULL,
+    country VARCHAR(30) NOT NULL
+)
+--------------
+
+Query OK, 0 rows affected (0.07 sec)
+
+--------------
+/* Creates a table of users */
+CREATE TABLE `user` (
+	user_id INT AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    zipcode CHAR(5) NOT NULL,
+    phone CHAR(10),
+    email VARCHAR(255) UNIQUE NOT NULL,
+    user_password VARCHAR(255) NOT NULL,
+    user_status VARCHAR(50) NOT NULL,
+    PRIMARY KEY (user_id),
+    FOREIGN KEY (zipcode) REFERENCES zip_codes (zip),
+    CHECK(user_status IN ("Online", "Away", "Offline", "Do Not Disturb"))
+)
+--------------
+
+Query OK, 0 rows affected (0.16 sec)
+
+--------------
+/* Creates a table of friend requests. 
+Indicates whether they are accepted, pending, or rejected. 
+Serves as a list of friends. */
+CREATE TABLE user_friend (
+	request_id INT AUTO_INCREMENT,
+    sender_id INT NOT NULL,
+    receiver_id INT NOT NULL,
+    action_time DATETIME NOT NULL,
+    action_taken VARCHAR(10) NOT NULL,
+    PRIMARY KEY(request_id),
+    FOREIGN KEY (sender_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (receiver_id) REFERENCES `user`(user_id),
+    CHECK(action_taken IN ("Accepted", "Declined", "Pending"))
+)
+--------------
+
+Query OK, 0 rows affected (0.15 sec)
+
+--------------
+/* Creates a table of messages, including a sender and a recipient. */
+CREATE TABLE user_message (
+	message_id INT AUTO_INCREMENT,
+    from_user_id INT NOT NULL,
+    to_user_id INT NOT NULL,
+    `message_text` VARCHAR(225) NOT NULL,
+    date_sent DATE NOT NULL,
+    date_read DATE,
+    PRIMARY KEY (message_id),
+    FOREIGN KEY (from_user_id) REFERENCES `user`(user_id),
+    FOREIGN KEY (to_user_id) REFERENCES `user`(user_id)
+)
+--------------
+
+Query OK, 0 rows affected (0.12 sec)
+
+--------------
+/* Creates a table of posts. */
+CREATE TABLE user_post (
+	post_id INT AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    post_content VARCHAR(255) NOT NULL,
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    PRIMARY KEY (post_id),
+    FOREIGN KEY (user_id) REFERENCES `user` (user_id)
+)
+--------------
+
+Query OK, 0 rows affected (0.10 sec)
+
+--------------
+/* Creates a table of categories of groups for reference */
+CREATE TABLE category (
+	category_id INT AUTO_INCREMENT,
+    category_name VARCHAR(30) UNIQUE NOT NULL,
+    PRIMARY KEY (category_id),
+    CHECK(category_name IN ("General", "Buy and Sell", 
+    "Social Learning", "Community", "Dancing", "Jobs", "Lifestyle", "Movies & Film", "Music", 
+    "Parents & Family", "Animals", "Gaming", "Religion", "Sports"))
+)
+--------------
+
+Query OK, 0 rows affected (0.10 sec)
+
+--------------
+/* Creates a table of comments for every post. 
+Links foreign key to other post id's along with the user who wrote the comment.*/
+CREATE TABLE post_comments (
+	comment_id INT AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    user_comment VARCHAR(255) NOT NULL,
+    created_date DATE NOT NULL,
+    post_id INT NOT NULL,
+    PRIMARY KEY (comment_id),
+    FOREIGN KEY (user_id) REFERENCES `user` (user_id),
+    FOREIGN KEY (post_id) REFERENCES user_post (post_id)
+)
+--------------
+
+Query OK, 0 rows affected (1.18 sec)
+
+--------------
+/* Creates a table of groups along with their information.*/
+CREATE TABLE group_info (
+	group_id INT AUTO_INCREMENT,
+    category_id INT NOT NULL,
+    created_by INT NOT NULL,
+    updated_by INT NOT NULL,
+    join_mode VARCHAR(10) NOT NULL,
+    group_name VARCHAR(50) UNIQUE NOT NULL,
+    visibility VARCHAR(10) NOT NULL,
+    PRIMARY KEY (group_id),
+    FOREIGN KEY (category_id) REFERENCES category (category_id),
+    FOREIGN KEY (created_by) REFERENCES `user` (user_id),
+    FOREIGN KEY (updated_by) REFERENCES `user` (user_id),
+    CHECK(visibility IN ("Public", "Private")),
+    CHECK(join_mode IN ("Open", "Request"))
+)
+--------------
+
+Query OK, 0 rows affected (0.89 sec)
+
+--------------
+/* Creates a table of group memberships. 
+This serves as an intermediary between the users & different groups with a many-many relationship.*/
+CREATE TABLE group_member (
+	membership_id INT AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    member_rank VARCHAR(30) NOT NULL,
+    group_id INT NOT NULL,
+    PRIMARY KEY (membership_id),
+    FOREIGN KEY (user_id) REFERENCES `user` (user_id),
+    FOREIGN KEY (group_id) REFERENCES group_info (group_id),
+    CHECK (member_rank IN ("Pending", "Member", "Moderator", "Admin", "Owner")),
+    UNIQUE (user_id, group_id)
+)
+--------------
+
+Query OK, 0 rows affected (0.52 sec)
+
+--------------
+/* Creates a table of group messages sent on each group. */
+CREATE TABLE group_message (
+	message_id INT AUTO_INCREMENT,
+    group_id INT NOT NULL,
+    user_id INT NOT NULL,
+    message VARCHAR(255),
+    created_at DATETIME NOT NULL,
+    updated_at DATETIME NOT NULL,
+    PRIMARY KEY(message_id)
+)
+--------------
+
+Query OK, 0 rows affected (0.23 sec)
+
+mysql> notee

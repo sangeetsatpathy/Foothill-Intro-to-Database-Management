@@ -1,0 +1,249 @@
+mysql> source C:/Users/Sangeet Satpathy/Desktop/IntroDataMng/my_scripts/ssatpathy_assignment4.sql
+Database changed
+--------------
+/* Questions 1-2 */
+CREATE TABLE IF NOT EXISTS global_locations (
+	id INT(4),
+    loc_name VARCHAR(20),
+    address VARCHAR(20),
+    city VARCHAR(20),
+    zip_postal_code VARCHAR(20),
+    phone VARCHAR(15),
+    email VARCHAR(15) UNIQUE,
+    manager_id INT(4),
+    emergency_contact VARCHAR(20),
+    PRIMARY KEY (id)
+)
+--------------
+
+Query OK, 0 rows affected, 2 warnings (0.34 sec)
+
+--------------
+DESCRIBE global_locations
+--------------
+
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| id                | int         | NO   | PRI | NULL    |       |
+| loc_name          | varchar(20) | YES  |     | NULL    |       |
+| address           | varchar(20) | YES  |     | NULL    |       |
+| city              | varchar(20) | YES  |     | NULL    |       |
+| zip_postal_code   | varchar(20) | YES  |     | NULL    |       |
+| phone             | varchar(15) | YES  |     | NULL    |       |
+| email             | varchar(15) | YES  | UNI | NULL    |       |
+| manager_id        | int         | YES  |     | NULL    |       |
+| emergency_contact | varchar(20) | YES  |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+9 rows in set (0.02 sec)
+
+--------------
+/* Question 3 */
+ALTER TABLE global_locations
+ADD date_opened DATE
+--------------
+
+Query OK, 0 rows affected (0.08 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+DESCRIBE global_locations
+--------------
+
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| id                | int         | NO   | PRI | NULL    |       |
+| loc_name          | varchar(20) | YES  |     | NULL    |       |
+| address           | varchar(20) | YES  |     | NULL    |       |
+| city              | varchar(20) | YES  |     | NULL    |       |
+| zip_postal_code   | varchar(20) | YES  |     | NULL    |       |
+| phone             | varchar(15) | YES  |     | NULL    |       |
+| email             | varchar(15) | YES  | UNI | NULL    |       |
+| manager_id        | int         | YES  |     | NULL    |       |
+| emergency_contact | varchar(20) | YES  |     | NULL    |       |
+| date_opened       | date        | YES  |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+10 rows in set (0.00 sec)
+
+--------------
+/* Question 4:*/
+DESCRIBE global_locations
+--------------
+
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| id                | int         | NO   | PRI | NULL    |       |
+| loc_name          | varchar(20) | YES  |     | NULL    |       |
+| address           | varchar(20) | YES  |     | NULL    |       |
+| city              | varchar(20) | YES  |     | NULL    |       |
+| zip_postal_code   | varchar(20) | YES  |     | NULL    |       |
+| phone             | varchar(15) | YES  |     | NULL    |       |
+| email             | varchar(15) | YES  | UNI | NULL    |       |
+| manager_id        | int         | YES  |     | NULL    |       |
+| emergency_contact | varchar(20) | YES  |     | NULL    |       |
+| date_opened       | date        | YES  |     | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+10 rows in set (0.00 sec)
+
+--------------
+/* Question 5 */
+ALTER TABLE global_locations
+DROP date_opened
+--------------
+
+Query OK, 0 rows affected (0.04 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+/* Question 6 */
+ALTER TABLE global_locations 
+RENAME TO global_locations_backup
+--------------
+
+Query OK, 0 rows affected (0.51 sec)
+
+--------------
+/* Question 7 */
+CREATE TABLE employee_pay (
+	employee_id INT PRIMARY KEY,
+    ssn CHAR(11) UNIQUE,
+    salary NUMERIC NOT NULL,
+    hire_date DATE NOT NULL
+)
+--------------
+
+ERROR 1050 (42S01): Table 'employee_pay' already exists
+--------------
+/* Question 8 */
+INSERT INTO employee_pay
+VALUES (184167702, "744-04-9444", 5500, "2011-03-15")
+--------------
+
+ERROR 1136 (21S01): Column count doesn't match value count at row 1
+--------------
+SELECT * FROM employee_pay
+--------------
+
++-------------+-------------+--------+------------+-----------+
+| employee_id | ssn         | salary | hire_date  | e_address |
++-------------+-------------+--------+------------+-----------+
+|   184167702 | 744-04-9444 |   5500 | 2011-03-15 | NULL      |
++-------------+-------------+--------+------------+-----------+
+1 row in set (0.00 sec)
+
+--------------
+/* Question 9 */
+ALTER TABLE employee_pay
+ADD e_address VARCHAR(30) NULL
+--------------
+
+ERROR 1060 (42S21): Duplicate column name 'e_address'
+--------------
+/*Question 10*/
+SHOW TABLES FROM megastore
+--------------
+
++-------------------------+
+| Tables_in_megastore     |
++-------------------------+
+| categories              |
+| credit_ratings          |
+| cust_address            |
+| customers               |
+| departments             |
+| employee_pay            |
+| employees               |
+| global_locations_backup |
+| inventory               |
+| jobs                    |
+| locations               |
+| order_details           |
+| orders                  |
+| products                |
+| shipping_modes          |
+| warehouses              |
++-------------------------+
+16 rows in set (0.26 sec)
+
+--------------
+/*Question 11*/
+ALTER TABLE employee_pay
+DROP e_address
+--------------
+
+Query OK, 0 rows affected (0.46 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+--------------
+/*Question 12*/
+DROP TABLE global_locations_backup
+--------------
+
+Query OK, 0 rows affected (0.11 sec)
+
+--------------
+SHOW TABLES FROM megastore
+--------------
+
++---------------------+
+| Tables_in_megastore |
++---------------------+
+| categories          |
+| credit_ratings      |
+| cust_address        |
+| customers           |
+| departments         |
+| employee_pay        |
+| employees           |
+| inventory           |
+| jobs                |
+| locations           |
+| order_details       |
+| orders              |
+| products            |
+| shipping_modes      |
+| warehouses          |
++---------------------+
+15 rows in set (0.00 sec)
+
+--------------
+/* Question 13 */
+INSERT INTO categories
+VALUES ("FU", "feurniture")
+--------------
+
+Query OK, 1 row affected (0.11 sec)
+
+--------------
+SELECT * FROM categories
+--------------
+
++---------+--------------------+
+| catg_id | catg_desc          |
++---------+--------------------+
+| APL     | APPLIANCES         |
+| BK      | BOOKS              |
+| CEQ     | COMPUTER EQUIPMENT |
+| FU      | feurniture         |
+| GFD     | GOURMET FOOD       |
+| HD      | HARDWARE           |
+| HW      | HOUSEWARES         |
+| MUS     | MUSIC              |
+| PET     | PET SUPPLIES       |
+| SPG     | SPORTING GOODS     |
++---------+--------------------+
+10 rows in set (0.00 sec)
+
+--------------
+/* Question 14 */
+UPDATE categories
+SET catg_desc = "furniture"
+WHERE catg_id = "FU"
+--------------
+
+Query OK, 1 row affected (0.04 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> notee
